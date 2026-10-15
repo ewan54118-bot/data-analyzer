@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="page_title">DataLens - 智能数据分析平台</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+
+<!-- ==================== Loading Screen ==================== -->
+<div id="loading-screen" class="loading-screen">
+    <div class="loading-spinner"></div>
+    <p class="loading-text" data-i18n="loading_text">正在加载 DataLens…</p>
+</div>
+
+<!-- ==================== 顶部导航 ==================== -->
+<header class="site-header" id="siteHeader">
+    <div class="header-inner">
+        <div class="logo">
+            <i class="fas fa-globe"></i>
+            <span>Data<span class="logo-accent">Lens</span></span>
+        </div>
+        <nav class="main-nav" id="mainNav">
+            <div class="nav-group-home">
+                <a href="#" class="nav-link active" onclick="navigateTo('home'); return false;" data-i18n="nav_home"><i class="fas fa-home"></i> 首页</a>
+                <a href="#" class="nav-link" onclick="navigateTo('data'); return false;" data-i18n="nav_data"><i class="fas fa-database"></i> 数据管理</a>
+                <a href="#" class="nav-link" onclick="navigateTo('overview'); return false;" data-i18n="nav_overview"><i class="fas fa-chart-pie"></i> 数据概览</a>
+                <a href="#" class="nav-link" onclick="navigateTo('transform'); return false;" data-i18n="nav_transform"><i class="fas fa-cogs"></i> 数据转换</a>
+                <a href="#" class="nav-link" onclick="navigateTo('visualize'); return false;" data-i18n="nav_visualize"><i class="fas fa-chart-bar"></i> 可视化</a>
+                <a href="#" class="nav-link" onclick="navigateTo('advanced'); return false;" data-i18n="nav_advanced"><i class="fas fa-rocket"></i> 高级分析</a>
+                <a href="#" class="nav-link" onclick="navigateTo('export'); return false;" data-i18n="nav_export"><i class="fas fa-download"></i> 导出</a>
+            </div>
+        </nav>
+        <div class="header-actions">
+            <div class="dataset-info" id="dataset-info"></div>
+            <button class="lang-toggle" id="langToggle" title="切换语言" data-i18n-title="switch_language">
+                <i class="fas fa-language"></i> <span id="langLabel">EN</span>
+            </button>
+            <div class="theme-toggle" id="themeToggle" title="切换主题" data-i18n-title="toggle_theme">
+                <i class="fas fa-moon"></i>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="菜单" data-i18n-aria-label="menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- ==================== 视图 0：首页 ==================== -->
+<div id="view-home" class="page-view active">
+    <section class="hero" id="hero">
+        <div class="hero-bg-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+        <div class="hero-content">
+            <div class="module-badge">
+                <i class="fas fa-chart-line"></i> <span data-i18n="hero_badge">智能数据分析</span>
+            </div>
+            <h1 class="hero-title">
+                <span data-i18n="hero_prefix">用浏览器实现</span><span class="gradient-text" data-i18n="hero_highlight">Pandas 数据分析</span>
+            </h1>
+            <p class="hero-subtitle" data-i18n="hero_subtitle">
+                从数据加载到统计分析，从数据转换到可视化呈现 —— 全面复刻 Python Pandas 核心功能，
+                通过交互式操作深入理解每一种数据分析方法的原理与实践。支持中英双语，明暗双主题。
+            </p>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number">20+</span>
+                    <span class="stat-label" data-i18n="stat_pandas_ops">Pandas 操作</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">9</span>
+                    <span class="stat-label" data-i18n="stat_chart_types">图表类型</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">4</span>
+                    <span class="stat-label" data-i18n="stat_export_formats">导出格式</span>
+                </div>
+            </div>
+            <a href="#" class="cta-button" onclick="navigateTo('data'); return false;">
+                <i class="fas fa-rocket"></i> <span data-i18n="btn_start">开始分析</span>
+            </a>
+        </div>
+        <div class="scroll-indicator">
+            <div class="mouse"><div class="wheel"></div></div>
+            <span data-i18n="scroll_down">向下滚动</span>
+        </div>
+    </section>
+
+    <section class="directory-section" id="directory">
+        <div class="container">
+            <div class="section-header center">
+                <h2 class="section-title" data-i18n="dir_title">功能模块总览</h2>
+                <p class="section-subtitle" data-i18n="dir_subtitle">点击任意卡片，进入对应功能模块的详细操作与交互演示</p>
+            </div>
+            <div class="directory-grid">
+                <div class="directory-card" onclick="navigateTo('data')">
+                    <div class="dir-card-icon" style="background: linear-gradient(135deg, #c97b6b, #d4917e);"><i class="fas fa-database"></i></div>
+                    <div class="dir-card-num">01</div>
+                    <h3 data-i18n="dir_data_title">数据加载与管理</h3>
+                    <p data-i18n="dir_data_desc">支持 CSV / JSON 上传、粘贴解析、默认数据集，前部 / 尾部 / 随机采样预览。</p>
+                    <span class="dir-card-link"><span data-i18n="dir_enter">进入模块</span> <i class="fas fa-arrow-right"></i></span>
+                </div>
+                <div class="directory-card" onclick="navigateTo('overview')">
+                    <div class="dir-card-icon" style="background: linear-gradient(135deg, #7a9e7e, #8fb393);"><i class="fas fa-chart-pie"></i></div>
+                    <div class="dir-card-num">02</div>
+                    <h3 data-i18n="dir_overview_title">数据概览</h3>
+                    <p data-i18n="dir_overview_desc">info()、describe()、dtypes、value_counts()、corr() 全方位统计。</p>
+                    <span class="dir-card-link"><span data-i18n="dir_enter">进入模块</span> <i class="fas fa-arrow-right"></i></span>
+                </div>
+                <div class="directory-card" onclick="navigateTo('transform')">
+                    <div class="dir-card-icon" style="background: linear-gradient(135deg, #c4a265, #d4b87a);"><i class="fas fa-cogs"></i></div>
+                    <div class="dir-card-num">03</div>
+                    <h3 data-i18n="dir_transform_title">数据转换</h3>
+                    <p data-i18n="dir_transform_desc">排序、筛选、分组聚合、缺失值处理、列操作、去重等强大功能。</p>
+                    <span class="dir-card-link"><span data-i18n="dir_enter">进入模块</span> <i class="fas fa-arrow-right"></i></span>
+                </div>
+                <div class="directory-card" onclick="navigateTo('visualize')">
+                    <div class="dir-card-icon" style="background: linear-gradient(135deg, #7b8eb8, #8fa0c7);"><i class="fas fa-chart-bar"></i></div>
+                    <div class="dir-card-num">04</div>
+                    <h3 data-i18n="dir_viz_title">数据可视化</h3>
+                    <p data-i18n="dir_viz_desc">9 种图表类型 + 5 种配色方案，交互式 ECharts 可视化分析。</p>
+                    <span class="dir-card-link"><span data-i18n="dir_enter">进入模块</span> <i class="fas fa-arrow-right"></i></span>
+                </div>
+                <div class="directory-card" onclick="navigateTo('advanced')">
+                    <div class="dir-card-icon" style="background: linear-gradient(135deg, #9b7eb8, #ae93c7);"><i class="fas fa-rocket"></i></div>
+                    <div class="dir-card-num">05</div>
+                    <h3 data-i18n="dir_advanced_title">高级分析</h3>
+                    <p data-i18n="dir_advanced_desc">透视表、异常检测、数据标准化、分箱、滚动统计、交叉表。</p>
+                    <span class="dir-card-link"><span data-i18n="dir_enter">进入模块</span> <i class="fas fa-arrow-right"></i></span>
+                </div>
+                <div class="directory-card" onclick="navigateTo('export')">
+                    <div class="dir-card-icon" style="background: linear-gradient(135deg, #5f9ea0, #6fb3b5);"><i class="fas fa-download"></i></div>
+                    <div class="dir-card-num">06</div>
+                    <h3 data-i18n="dir_export_title">数据导出</h3>
+                    <p data-i18n="dir_export_desc">CSV / JSON / TSV 剪贴板 / HTML 表格四种格式导出。</p>
+                    <span class="dir-card-link"><span data-i18n="dir_enter">进入模块</span> <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 功能对比总结 -->
+    <section class="summary-section" id="summary">
+        <div class="container">
+            <div class="section-header center">
+                <h2 class="section-title" data-i18n="summary_title">Pandas 操作对照表</h2>
+                <p class="section-subtitle" data-i18n="summary_subtitle">DataLens 完整复刻了 Pandas 的核心数据分析功能</p>
+            </div>
+            <div class="comparison-table-wrapper">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th data-i18n="table_category">类别</th>
+                            <th><i class="fas fa-snake"></i> Pandas</th>
+                            <th><i class="fas fa-globe"></i> DataLens</th>
+                            <th data-i18n="table_module">所属模块</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong data-i18n="cat_load">数据加载</strong></td>
+                            <td>read_csv(), read_json()</td>
+                            <td data-i18n="dl_load">CSV/JSON 上传 + 粘贴解析</td>
+                            <td data-i18n="mod_data">数据管理</td>
+                        </tr>
+                        <tr>
+                            <td><strong data-i18n="cat_preview">数据预览</strong></td>
+                            <td>head(), tail(), sample()</td>
+                            <td data-i18n="dl_preview">前部 / 尾部 / 随机采样预览</td>
+                            <td data-i18n="mod_data">数据管理</td>
+                        </tr>
+                        <tr>
+                            <td><strong data-i18n="cat_info">信息统计</strong></td>
+                            <td>info(), describe(), dtypes</td>
+                            <td data-i18n="dl_info">维度/类型/内存/描述统计</td>
+                            <td data-i18n="mod_overview">数据概览</td>
+                        </tr>
+                        <tr>
+                            <td><strong data-i18n="cat_sort">排序筛选</strong></td>
+                            <td>sort_values(), query()</td>
+                            <td data-i18n="dl_sort">多列排序 + 条件筛选</td>
+                            <td data-i18n="mod_transform">数据转换</td>
+                        </tr>
+                        <tr>
+                            <td><strong data-i18n="cat_group">分组聚合</strong></td>
+                            <td>groupby().agg()</td>
+                            <td data-i18n="dl_group">7 种聚合函数分组</td>
+                            <td data-i18n="mod_transform">数据转换</td>
+                        </tr>
+                        <tr>
+                            <td><strong data-i18n="cat_missing">缺失值</strong></td>
+                            <td>dropna(), fillna()</td>
+                            <td data-i18n="dl_missing">7 种缺失值处理方法</td>
+                            <td data-i18n="mod_transform">数据转换</td>
+                        </tr>
+                        <tr>
+                            <td><strong data-i18n="cat_viz">可视化</strong></td>
+                            <td>df.plot()</td>
+                            <td data-i18n="dl_viz">9 种交互式图表</td>
+                            <td data-i18n="mod_viz">可视化</td>
+                        </tr>
+                        <tr>
+                            <td><strong data-i18n="cat_export">数据导出</strong></td>
+                            <td>to_csv(), to_json()</td>
+                            <td data-i18n="dl_export">4 种格式导出</td>
+                            <td data-i18n="mod_export">导出</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- ==================== 视图 1：数据管理 ==================== -->
+<div id="view-data" class="page-view">
+    <section class="module-section" id="data-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">01</div>
+                <div class="section-title-group">
+                    <h2 class="section-title" data-i18n="sec_data_title">数据加载与管理</h2>
+                    <p class="section-subtitle" data-i18n="sec_data_sub">支持 CSV、JSON 文件上传，粘贴数据，或使用默认示例数据集</p>
+                </div>
+                <div class="section-icon" style="--accent: #c97b6b;"><i class="fas fa-database"></i></div>
+            </div>
+
+            <div class="section-tabs">
+                <button class="tab-btn active" data-tab="load"><i class="fas fa-upload"></i> <span data-i18n="tab_load">数据加载</span></button>
+                <button class="tab-btn" data-tab="preview"><i class="fas fa-table"></i> <span data-i18n="tab_preview">数据预览</span></button>
+            </div>
+
+            <div class="tab-panel active" data-panel="load">
+                <div class="data-controls">
+                    <div class="control-card">
+                        <div class="control-card-header">
+                            <div class="control-icon" style="background: linear-gradient(135deg, #c97b6b, #d4917e);"><i class="fas fa-file-csv"></i></div>
+                            <h3 data-i18n="data_upload_csv">上传 CSV 文件</h3>
+                        </div>
+                        <div class="upload-zone" id="csv-upload-zone">
+                            <input type="file" id="csv-file" accept=".csv" hidden>
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <span data-i18n="data_drop_csv">拖拽 CSV 文件到此处或点击选择</span>
+                        </div>
+                    </div>
+                    <div class="control-card">
+                        <div class="control-card-header">
+                            <div class="control-icon" style="background: linear-gradient(135deg, #7a9e7e, #8fb393);"><i class="fas fa-file-code"></i></div>
+                            <h3 data-i18n="data_upload_json">上传 JSON 文件</h3>
+                        </div>
+                        <div class="upload-zone" id="json-upload-zone">
+                            <input type="file" id="json-file" accept=".json" hidden>
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <span data-i18n="data_drop_json">拖拽 JSON 文件到此处或点击选择</span>
+                        </div>
+                    </div>
+                    <div class="control-card">
+                        <div class="control-card-header">
+                            <div class="control-icon" style="background: linear-gradient(135deg, #c4a265, #d4b87a);"><i class="fas fa-paste"></i></div>
+                            <h3 data-i18n="data_paste">粘贴数据</h3>
+                        </div>
+                        <textarea id="paste-data-input" class="paste-area" placeholder="Paste CSV or JSON data here..." data-i18n-placeholder="data_paste_placeholder"></textarea>
+                        <button class="btn btn-primary" id="btn-paste-load" data-i18n="data_btn_parse">解析数据</button>
+                    </div>
+                    <div class="control-card">
+                        <div class="control-card-header">
+                            <div class="control-icon" style="background: linear-gradient(135deg, #7b8eb8, #8fa0c7);"><i class="fas fa-globe"></i></div>
+                            <h3 data-i18n="data_default">使用默认数据集</h3>
+                        </div>
+                        <p class="control-desc" data-i18n="data_default_desc">全球 30 个主要城市的多维度数据集（人口、GDP、气温等 12 个字段）</p>
+                        <button class="btn btn-accent" id="btn-load-default" data-i18n="data_btn_load_default"><i class="fas fa-download"></i> 加载默认数据</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-panel" data-panel="preview">
+                <div class="knowledge-card">
+                    <div class="knowledge-header"><i class="fas fa-table"></i><h3 data-i18n="preview_header">数据预览</h3></div>
+                    <div class="knowledge-body">
+                        <div class="preview-controls">
+                            <select id="preview-rows" class="select-input">
+                                <option value="5" data-i18n="preview_5">5 行</option>
+                                <option value="10" data-i18n="preview_10">10 行</option>
+                                <option value="20" data-i18n="preview_20">20 行</option>
+                                <option value="50" data-i18n="preview_50">50 行</option>
+                                <option value="all" data-i18n="data_show_all">显示全部</option>
+                            </select>
+                            <select id="preview-mode" class="select-input">
+                                <option value="head" data-i18n="preview_head">前部数据</option>
+                                <option value="tail" data-i18n="preview_tail">尾部数据</option>
+                                <option value="sample" data-i18n="data_sample">随机采样</option>
+                            </select>
+                            <button class="btn btn-sm btn-outline" id="btn-refresh-preview"><i class="fas fa-sync-alt"></i> <span data-i18n="data_refresh">刷新</span></button>
+                        </div>
+                        <div class="table-container" id="data-table-container">
+                            <table class="data-table" id="data-table">
+                                <thead id="data-table-head"></thead>
+                                <tbody id="data-table-body"></tbody>
+                            </table>
+                        </div>
+                        <div class="table-footer" id="table-footer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- ==================== 视图 2：数据概览 ==================== -->
+<div id="view-overview" class="page-view">
+    <section class="module-section section-alt" id="overview-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">02</div>
+                <div class="section-title-group">
+                    <h2 class="section-title" data-i18n="sec_overview_title">数据概览</h2>
+                    <p class="section-subtitle" data-i18n="sec_overview_sub">全面的数据统计信息，类似 pandas 的 info() 和 describe()</p>
+                </div>
+                <div class="section-icon" style="--accent: #7a9e7e;"><i class="fas fa-chart-pie"></i></div>
+            </div>
+
+            <div class="overview-grid" id="overview-content">
+                <div class="overview-card" id="card-shape">
+                    <h3><i class="fas fa-ruler-combined"></i> <span data-i18n="overview_shape">数据维度</span></h3>
+                    <div class="stat-row">
+                        <div class="stat-item"><span class="stat-label" data-i18n="overview_rows">行数</span><span class="stat-value" id="stat-rows">-</span></div>
+                        <div class="stat-item"><span class="stat-label" data-i18n="overview_cols">列数</span><span class="stat-value" id="stat-cols">-</span></div>
+                        <div class="stat-item"><span class="stat-label" data-i18n="overview_memory">内存占用</span><span class="stat-value" id="stat-memory">-</span></div>
+                    </div>
+                </div>
+                <div class="overview-card" id="card-dtypes">
+                    <h3><i class="fas fa-font"></i> <span data-i18n="overview_dtypes">数据类型 (dtypes)</span></h3>
+                    <div id="dtypes-content" class="dtypes-list"></div>
+                </div>
+                <div class="overview-card" id="card-missing">
+                    <h3><i class="fas fa-exclamation-triangle"></i> <span data-i18n="overview_missing">缺失值统计</span></h3>
+                    <div id="missing-content" class="missing-list"></div>
+                </div>
+                <div class="overview-card full-width" id="card-describe">
+                    <h3><i class="fas fa-calculator"></i> <span data-i18n="overview_describe">统计描述 (describe)</span></h3>
+                    <div class="table-container">
+                        <table class="data-table" id="describe-table">
+                            <thead id="describe-table-head"></thead>
+                            <tbody id="describe-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="overview-card full-width" id="card-value-counts">
+                    <h3><i class="fas fa-list-ol"></i> <span data-i18n="overview_value_counts">值计数 (value_counts)</span></h3>
+                    <div class="vc-controls"><select id="vc-column" class="select-input"></select></div>
+                    <div class="table-container">
+                        <table class="data-table" id="vc-table">
+                            <thead><tr>
+                                <th data-i18n="overview_value">值</th>
+                                <th data-i18n="overview_count">计数</th>
+                                <th data-i18n="overview_percentage">百分比</th>
+                            </tr></thead>
+                            <tbody id="vc-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="overview-card full-width" id="card-correlation">
+                    <h3><i class="fas fa-project-diagram"></i> <span data-i18n="overview_correlation">相关性矩阵 (corr)</span></h3>
+                    <div id="correlation-chart" style="width:100%;height:500px;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- ==================== 视图 3：数据转换 ==================== -->
+<div id="view-transform" class="page-view">
+    <section class="module-section" id="transform-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">03</div>
+                <div class="section-title-group">
+                    <h2 class="section-title" data-i18n="sec_transform_title">数据转换</h2>
+                    <p class="section-subtitle" data-i18n="sec_transform_sub">强大的数据操作功能：排序、筛选、分组、缺失值处理等</p>
+                </div>
+                <div class="section-icon" style="--accent: #c4a265;"><i class="fas fa-cogs"></i></div>
+            </div>
+
+            <div class="transform-grid">
+                <div class="transform-card">
+                    <h3><i class="fas fa-sort"></i> <span data-i18n="transform_sort">排序 (sort_values)</span></h3>
+                    <div class="form-group"><label data-i18n="transform_sort_by">排序列</label><select id="sort-column" class="select-input"></select></div>
+                    <div class="form-group"><label data-i18n="transform_sort_order">排序方式</label>
+                        <select id="sort-order" class="select-input">
+                            <option value="asc" data-i18n="transform_ascending">升序</option>
+                            <option value="desc" data-i18n="transform_descending">降序</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="btn-sort" data-i18n="transform_apply_sort">应用排序</button>
+                </div>
+                <div class="transform-card">
+                    <h3><i class="fas fa-filter"></i> <span data-i18n="transform_filter">筛选 (query)</span></h3>
+                    <div class="form-group"><label data-i18n="transform_filter_col">筛选列</label><select id="filter-column" class="select-input"></select></div>
+                    <div class="form-group"><label data-i18n="transform_filter_op">操作符</label>
+                        <select id="filter-op" class="select-input">
+                            <option value="==">==</option><option value="!=">!=</option>
+                            <option value=">">&gt;</option><option value="<">&lt;</option>
+                            <option value=">=">&gt;=</option><option value="<=">&lt;=</option>
+                            <option value="contains" data-i18n="transform_contains">包含</option>
+                            <option value="not_contains" data-i18n="transform_not_contains">不包含</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label data-i18n="transform_filter_val">筛选值</label><input type="text" id="filter-value" class="text-input"></div>
+                    <button class="btn btn-primary" id="btn-filter" data-i18n="transform_apply_filter">应用筛选</button>
+                    <button class="btn btn-outline btn-sm mt-10" id="btn-reset-filter" data-i18n="transform_reset_filter">重置筛选</button>
+                </div>
+                <div class="transform-card">
+                    <h3><i class="fas fa-layer-group"></i> <span data-i18n="transform_groupby">分组聚合 (groupby)</span></h3>
+                    <div class="form-group"><label data-i18n="transform_groupby_col">分组列</label><select id="groupby-column" class="select-input"></select></div>
+                    <div class="form-group"><label data-i18n="transform_groupby_val">聚合列</label><select id="groupby-value-column" class="select-input"></select></div>
+                    <div class="form-group"><label data-i18n="transform_groupby_agg">聚合方式</label>
+                        <div class="checkbox-group" id="groupby-agg-group">
+                            <label><input type="checkbox" value="count" checked> <span data-i18n="stat_count">计数</span></label>
+                            <label><input type="checkbox" value="sum"> <span data-i18n="stat_sum">总和</span></label>
+                            <label><input type="checkbox" value="mean" checked> <span data-i18n="stat_mean">均值</span></label>
+                            <label><input type="checkbox" value="min"> <span data-i18n="stat_min">最小值</span></label>
+                            <label><input type="checkbox" value="max"> <span data-i18n="stat_max">最大值</span></label>
+                            <label><input type="checkbox" value="std"> <span data-i18n="stat_std">标准差</span></label>
+                            <label><input type="checkbox" value="median"> <span data-i18n="stat_median">中位数</span></label>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="btn-groupby" data-i18n="transform_apply_groupby">执行分组</button>
+                </div>
+                <div class="transform-card">
+                    <h3><i class="fas fa-medkit"></i> <span data-i18n="transform_missing">缺失值处理</span></h3>
+                    <div class="form-group"><label data-i18n="transform_missing_col">目标列</label><select id="missing-column" class="select-input"></select></div>
+                    <div class="form-group"><label data-i18n="transform_missing_method">处理方法</label>
+                        <select id="missing-method" class="select-input">
+                            <option value="dropna" data-i18n="transform_dropna">删除缺失行</option>
+                            <option value="fill_mean" data-i18n="transform_fill_mean">填充均值</option>
+                            <option value="fill_median" data-i18n="transform_fill_median">填充中位数</option>
+                            <option value="fill_mode" data-i18n="transform_fill_mode">填充众数</option>
+                            <option value="fill_value" data-i18n="transform_fill_value">填充自定义值</option>
+                            <option value="fill_ffill" data-i18n="transform_fill_ffill">前向填充 (ffill)</option>
+                            <option value="fill_bfill" data-i18n="transform_fill_bfill">后向填充 (bfill)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="fill-value-group" style="display:none;">
+                        <label data-i18n="transform_custom_value">自定义值</label>
+                        <input type="text" id="missing-fill-value" class="text-input">
+                    </div>
+                    <button class="btn btn-primary" id="btn-handle-missing" data-i18n="transform_apply_missing">处理缺失值</button>
+                </div>
+                <div class="transform-card">
+                    <h3><i class="fas fa-columns"></i> <span data-i18n="transform_col_ops">列操作</span></h3>
+                    <div class="form-group"><label data-i18n="transform_col_action">操作</label>
+                        <select id="col-action" class="select-input">
+                            <option value="drop" data-i18n="transform_drop_col">删除列</option>
+                            <option value="rename" data-i18n="transform_rename_col">重命名列</option>
+                            <option value="convert" data-i18n="transform_convert_type">转换类型</option>
+                            <option value="add" data-i18n="transform_add_col">添加计算列</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label data-i18n="transform_target_col">目标列</label><select id="col-target" class="select-input"></select></div>
+                    <div class="form-group" id="col-extra-group" style="display:none;">
+                        <label id="col-extra-label">值</label>
+                        <input type="text" id="col-extra-value" class="text-input">
+                    </div>
+                    <button class="btn btn-primary" id="btn-col-op" data-i18n="transform_apply_col_op">应用操作</button>
+                </div>
+                <div class="transform-card">
+                    <h3><i class="fas fa-clone"></i> <span data-i18n="transform_dedup">去重 (drop_duplicates)</span></h3>
+                    <div class="form-group"><label data-i18n="transform_dedup_cols">去重列（多选）</label><div id="dedup-columns" class="checkbox-group"></div></div>
+                    <button class="btn btn-primary" id="btn-dedup" data-i18n="transform_apply_dedup">执行去重</button>
+                </div>
+            </div>
+
+            <div id="transform-results" class="transform-results" style="display:none;">
+                <h3><i class="fas fa-clipboard-list"></i> <span data-i18n="transform_results">操作结果</span></h3>
+                <div class="table-container">
+                    <table class="data-table" id="transform-table">
+                        <thead id="transform-table-head"></thead>
+                        <tbody id="transform-table-body"></tbody>
+                    </table>
+                </div>
+                <button class="btn btn-accent mt-10" id="btn-apply-transform" data-i18n="transform_apply_to_main">应用到主数据集</button>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- ==================== 视图 4：可视化 ==================== -->
+<div id="view-visualize" class="page-view">
+    <section class="module-section section-alt" id="visualize-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">04</div>
+                <div class="section-title-group">
+                    <h2 class="section-title" data-i18n="sec_viz_title">数据可视化</h2>
+                    <p class="section-subtitle" data-i18n="sec_viz_sub">丰富的图表类型，交互式可视化分析</p>
+                </div>
+                <div class="section-icon" style="--accent: #7b8eb8;"><i class="fas fa-chart-bar"></i></div>
+            </div>
+
+            <div class="viz-layout">
+                <div class="viz-controls">
+                    <div class="form-group"><label data-i18n="viz_chart_type">图表类型</label>
+                        <select id="chart-type" class="select-input">
+                            <option value="bar" data-i18n="viz_bar">柱状图</option>
+                            <option value="line" data-i18n="viz_line">折线图</option>
+                            <option value="scatter" data-i18n="viz_scatter">散点图</option>
+                            <option value="pie" data-i18n="viz_pie">饼图</option>
+                            <option value="histogram" data-i18n="viz_histogram">直方图</option>
+                            <option value="box" data-i18n="viz_box">箱线图</option>
+                            <option value="heatmap" data-i18n="viz_heatmap">热力图</option>
+                            <option value="radar" data-i18n="viz_radar">雷达图</option>
+                            <option value="funnel" data-i18n="viz_funnel">漏斗图</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label data-i18n="viz_x_axis">X 轴</label><select id="viz-x-col" class="select-input"></select></div>
+                    <div class="form-group"><label data-i18n="viz_y_axis">Y 轴</label><select id="viz-y-col" class="select-input"><option value="">-</option></select></div>
+                    <div class="form-group"><label data-i18n="viz_color_by">颜色分组</label><select id="viz-color-col" class="select-input"><option value="">-</option></select></div>
+                    <div class="form-group"><label data-i18n="viz_title_input">图表标题</label><input type="text" id="viz-title" class="text-input" placeholder="我的图表" data-i18n-placeholder="viz_title_placeholder"></div>
+                    <div class="form-group"><label data-i18n="viz_color_theme">配色方案</label>
+                        <select id="viz-theme" class="select-input">
+                            <option value="default" data-i18n="viz_theme_default">默认</option>
+                            <option value="vintage" data-i18n="viz_theme_vintage">复古</option>
+                            <option value="dark" data-i18n="viz_theme_dark">深色</option>
+                            <option value="ocean" data-i18n="viz_theme_ocean">海洋</option>
+                            <option value="forest" data-i18n="viz_theme_forest">森林</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary btn-block" id="btn-create-chart"><i class="fas fa-chart-area"></i> <span data-i18n="viz_create">生成图表</span></button>
+                </div>
+                <div class="viz-display">
+                    <div id="chart-container" style="width:100%;height:600px;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- ==================== 视图 5：高级分析 ==================== -->
+<div id="view-advanced" class="page-view">
+    <section class="module-section" id="advanced-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">05</div>
+                <div class="section-title-group">
+                    <h2 class="section-title" data-i18n="sec_advanced_title">高级分析</h2>
+                    <p class="section-subtitle" data-i18n="sec_advanced_sub">专业级数据分析功能：透视表、异常检测、标准化等</p>
+                </div>
+                <div class="section-icon" style="--accent: #9b7eb8;"><i class="fas fa-rocket"></i></div>
+            </div>
+
+            <div class="transform-grid">
+                <div class="transform-card">
+                    <h3><i class="fas fa-th"></i> <span data-i18n="advanced_pivot">数据透视表 (pivot_table)</span></h3>
+                    <div class="form-group"><label data-i18n="advanced_pivot_index">行索引</label><select id="pivot-index" class="select-input"></select></div>
+                    <div class="form-group"><label data-i18n="advanced_pivot_columns">列</label><select id="pivot-columns" class="select-input"></select></div>
+                    <div class="form-group"><label data-i18n="advanced_pivot_values">值</label><select id="pivot-values" class="select-input"></select></div>
+                    <div class="form-group"><label data-i18n="advanced_pivot_agg">聚合函数</label>
+                        <select id="pivot-agg" class="select-input">
+                            <option value="mean" data-i18n="stat_mean">均值</option><option value="sum" data-i18n="stat_sum">总和</option>
+                            <option value="count" data-i18n="stat_count">计数</option><option value="min" data-i18n="stat_min">最小值</option><option value="max" data-i18n="stat_max">最大值</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="btn-pivot" data-i18n="advanced_apply_pivot">生成透视表</button>
+                </div>
+                <div class="transform-card">
+                    <h3><i class="fas fa-search"></i> <span data-i18n="advanced_outliers">异常值检测 (IQR)</span></h3>
+                    <div class="form-group"><label data-i18n="advanced_outlier_col">目标列</label><select id="outlier-column" class="select-input"></select></div>
+                    <button class="btn btn-primary" id="btn-detect-outliers" data-i18n="advanced_detect_outliers">检测异常值</button>
+                    <div id="outlier-results" class="mt-10" style="display:none;"></div>
+                </div>
+                <div class="transform-card">
+                    <h3><i class="fas fa-balance-scale"></i> <span data-i18n="advanced_normalize">数据标准化</span></h3>
+                    <div class="form-group"><label data-i18n="advanced_norm_col">目标列</label><select id="norm-column" class="select-input"></select></div>
+                    <div class="form-group"><label data-i18n="advanced_norm_method">标准化方法</label>
+                        <select id="norm-method" class="select-input">
+                            <option value="minmax" data-i18n="advanced_minmax">最小—最大值缩放</option>
+                            <option value="zscore" data-i18n="advanced_zscore">标准分数标准化</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="btn-normalize" data-i18n="advanced_apply_norm">应用标准化</button>
+                </div>
+                <div class="transform-card">
+                    <h3><i class="fas fa-boxes"></i> <span data-i18n="advanced_binning">数据分箱</span></h3>
+                    <div class="form-group"><label data-i18n="advanced_bin_col">目标列</label><select id="bin-column" class="select-input"></select></div>
+                    <div class="form-group"><label data-i18n="advanced_bin_count">分箱数量</label><input type="number" id="bin-count" class="text-input" value="5" min="2" max="20"></div>
+                    <div class="form-group"><label data-i18n="advanced_bin_method">分箱方法</label>
+                        <select id="bin-method" class="select-input">
+                            <option value="width" data-i18n="advanced_bin_width">等宽分箱</option>
+                            <option value="frequency" data-i18n="advanced_bin_freq">等频分箱</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="btn-binning" data-i18n="advanced_apply_binning">应用分箱</button>
+                </div>
+                <div class="transform-card">
+                    <h3><i class="fas fa-chart-line"></i> <span data-i18n="advanced_rolling">滚动统计 (rolling)</span></h3>
+                    <div class="form-group"><label data-i18n="advanced_rolling_col">目标列</label><select id="rolling-column" class="select-input"></select></div>
+                    <div class="form-group"><label data-i18n="advanced_rolling_window">窗口大小</label><input type="number" id="rolling-window" class="text-input" value="3" min="2" max="20"></div>
+                    <div class="form-group"><label data-i18n="advanced_rolling_stat">统计方法</label>
+                        <select id="rolling-stat" class="select-input">
+                            <option value="mean" data-i18n="stat_mean">均值</option><option value="sum" data-i18n="stat_sum">总和</option><option value="std" data-i18n="stat_std">标准差</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="btn-rolling" data-i18n="advanced_apply_rolling">应用滚动统计</button>
+                </div>
+                <div class="transform-card">
+                    <h3><i class="fas fa-table"></i> <span data-i18n="advanced_crosstab">交叉表 (crosstab)</span></h3>
+                    <div class="form-group"><label data-i18n="advanced_crosstab_row">行</label><select id="crosstab-row" class="select-input"></select></div>
+                    <div class="form-group"><label data-i18n="advanced_crosstab_col">列</label><select id="crosstab-col" class="select-input"></select></div>
+                    <button class="btn btn-primary" id="btn-crosstab" data-i18n="advanced_apply_crosstab">生成交叉表</button>
+                </div>
+            </div>
+
+            <div id="advanced-results" class="transform-results" style="display:none;">
+                <h3><i class="fas fa-clipboard-list"></i> <span data-i18n="advanced_results">分析结果</span></h3>
+                <div class="table-container">
+                    <table class="data-table" id="advanced-table">
+                        <thead id="advanced-table-head"></thead>
+                        <tbody id="advanced-table-body"></tbody>
+                    </table>
+                </div>
+                <button class="btn btn-accent mt-10" id="btn-apply-advanced" data-i18n="transform_apply_to_main">应用到主数据集</button>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- ==================== 视图 6：导出 ==================== -->
+<div id="view-export" class="page-view">
+    <section class="module-section section-alt" id="export-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">06</div>
+                <div class="section-title-group">
+                    <h2 class="section-title" data-i18n="sec_export_title">数据导出</h2>
+                    <p class="section-subtitle" data-i18n="sec_export_sub">将处理后的数据导出为多种格式</p>
+                </div>
+                <div class="section-icon" style="--accent: #5f9ea0;"><i class="fas fa-download"></i></div>
+            </div>
+
+            <div class="export-grid">
+                <div class="export-card">
+                    <div class="export-icon"><i class="fas fa-file-csv"></i></div>
+                    <h3>CSV</h3>
+                    <p data-i18n="export_csv_desc">逗号分隔值文件，兼容 Excel 等软件</p>
+                    <button class="btn btn-primary" id="btn-export-csv"><i class="fas fa-download"></i> <span data-i18n="export_download">下载</span></button>
+                </div>
+                <div class="export-card">
+                    <div class="export-icon"><i class="fas fa-file-code"></i></div>
+                    <h3>JSON</h3>
+                    <p data-i18n="export_json_desc">JSON 格式，适用于 Web 应用</p>
+                    <button class="btn btn-primary" id="btn-export-json"><i class="fas fa-download"></i> <span data-i18n="export_download">下载</span></button>
+                </div>
+                <div class="export-card">
+                    <div class="export-icon"><i class="fas fa-clipboard"></i></div>
+                    <h3 data-i18n="export_clipboard">剪贴板</h3>
+                    <p data-i18n="export_clipboard_desc">复制 TSV 格式到剪贴板</p>
+                    <button class="btn btn-primary" id="btn-export-clipboard"><i class="fas fa-copy"></i> <span data-i18n="export_copy">复制</span></button>
+                </div>
+                <div class="export-card">
+                    <div class="export-icon"><i class="fas fa-code"></i></div>
+                    <h3 data-i18n="export_html_title">HTML 表格</h3>
+                    <p data-i18n="export_html_desc">导出为 HTML 表格代码</p>
+                    <button class="btn btn-primary" id="btn-export-html"><i class="fas fa-download"></i> <span data-i18n="export_download">下载</span></button>
+                </div>
+            </div>
+
+            <div class="export-preview">
+                <h3><i class="fas fa-eye"></i> <span data-i18n="export_preview">导出数据预览</span></h3>
+                <div class="table-container">
+                    <table class="data-table" id="export-table">
+                        <thead id="export-table-head"></thead>
+                        <tbody id="export-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- ==================== 页脚 ==================== -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <i class="fas fa-globe"></i>
+                <span>DataLens</span>
+                <p data-i18n="footer_desc">智能数据分析平台 — 浏览器中的 Pandas</p>
+            </div>
+            <div class="footer-links">
+                <a href="#" onclick="navigateTo('home'); return false;" data-i18n="nav_home">首页</a>
+                <a href="#" onclick="navigateTo('data'); return false;" data-i18n="nav_data_short">数据</a>
+                <a href="#" onclick="navigateTo('overview'); return false;" data-i18n="nav_overview_short">概览</a>
+                <a href="#" onclick="navigateTo('transform'); return false;" data-i18n="nav_transform_short">转换</a>
+                <a href="#" onclick="navigateTo('visualize'); return false;" data-i18n="nav_viz_short">可视化</a>
+                <a href="#" onclick="navigateTo('advanced'); return false;" data-i18n="nav_advanced_short">高级</a>
+                <a href="#" onclick="navigateTo('export'); return false;" data-i18n="nav_export_short">导出</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p data-i18n="footer_copyright">&copy; 2026 DataLens Pro. 智能数据分析平台</p>
+        </div>
+    </div>
+</footer>
+
+<button class="back-to-top" id="backToTop" title="返回顶部" data-i18n-title="back_to_top"><i class="fas fa-arrow-up"></i></button>
+<div id="toast-container" class="toast-container"></div>
+
+<!-- Scripts -->
+<script src="js/i18n.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/dataManager.js"></script>
+<script src="js/visualizer.js"></script>
+<script src="js/advanced.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

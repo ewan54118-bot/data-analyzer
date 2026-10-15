@@ -1,0 +1,31 @@
+City,Country,Continent,Population,Area_km2,GDP_Billion_USD,Avg_Temperature_C,Annual_Rainfall_mm,Tourism_Index,Cost_of_Living_Index,Internet_Speed_Mbps,Life_Expectancy
+Tokyo,Japan,Asia,13960000,2194,1920,15.4,1530,8.5,83.6,65.2,84.6
+London,UK,Europe,8982000,1572,879,11.3,602,9.2,81.2,71.3,81.3
+New York,USA,North America,8336000,783,1800,12.7,1268,9.0,100.0,85.4,78.5
+Paris,France,Europe,2161000,105,738,12.8,637,9.5,78.4,58.9,82.7
+Sydney,Australia,Oceania,5312000,12368,420,18.0,1213,8.8,75.3,52.6,83.4
+Singapore,Singapore,Asia,5686000,733,397,27.0,2340,8.9,82.1,185.3,83.6
+Dubai,UAE,Asia,3331000,4114,110,27.2,94,8.6,72.8,87.5,78.2
+Berlin,Germany,Europe,3645000,891,185,10.3,570,8.7,65.2,47.3,80.9
+Toronto,Canada,North America,2731000,630,332,9.4,831,8.4,73.1,77.2,82.3
+Shanghai,China,Asia,24870000,6341,680,16.1,1166,8.3,61.5,110.2,77.3
+Mumbai,India,Asia,12440000,603,310,27.2,2167,7.2,32.4,28.6,69.7
+Sao Paulo,Brazil,South America,12330000,1521,430,19.3,1454,7.8,42.5,36.8,76.0
+Cairo,Egypt,Africa,9540000,3085,150,21.7,25,6.5,28.3,12.4,71.2
+Mexico City,Mexico,North America,9210000,1485,340,16.6,792,7.5,38.7,26.1,75.1
+Moscow,Russia,Europe,12500000,2562,450,5.8,707,7.9,51.6,40.2,73.2
+Seoul,South Korea,Asia,9776000,605,770,12.5,1394,8.7,74.5,120.8,83.5
+Bangkok,Thailand,Asia,10540000,1569,230,28.6,1648,8.4,40.2,45.7,77.2
+Istanbul,Turkey,Europe,15460000,5343,250,14.7,677,8.1,37.8,28.9,78.6
+Lagos,Nigeria,Africa,15390000,1172,140,27.0,1425,5.8,25.6,18.3,54.7
+Buenos Aires,Argentina,South America,3075000,203,320,17.9,1236,7.6,35.2,31.5,77.1
+Stockholm,Sweden,Europe,975000,188,69,7.7,539,8.3,72.5,78.6,82.4
+Amsterdam,Netherlands,Europe,872000,219,105,10.5,838,8.8,73.2,68.4,81.8
+Zurich,Switzerland,Europe,434000,88,85,9.3,1134,8.2,97.4,82.1,83.9
+Vienna,Austria,Europe,1897000,415,95,11.4,604,8.9,67.8,62.5,81.5
+Helsinki,Finland,Europe,656000,213,60,5.9,655,8.0,69.3,75.3,81.9
+Johannesburg,South Africa,Africa,5780000,334,130,15.5,713,6.8,34.5,22.7,63.4
+Nairobi,Kenya,Africa,4397000,696,65,18.5,869,6.2,30.8,20.1,67.5
+Lima,Peru,South America,10560000,2672,220,18.7,105,7.0,33.4,25.8,76.5
+Hanoi,Vietnam,Asia,8054000,3359,85,23.6,1676,7.3,29.7,42.3,75.4
+Kuala Lumpur,Malaysia,Asia,1782000,243,95,27.8,2490,7.8,39.5,35.2,76.2
